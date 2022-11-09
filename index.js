@@ -5,7 +5,6 @@
  *
  * @param {RGBot} bot
  */
-
 function configureBot(bot) {
 
     bot.setDebug(true);
