@@ -10,13 +10,13 @@ function configureBot(bot) {
     bot.setDebug(true);
     
     // This function will make the Bot chop + pick up a Coal Ore.
-    aysnc function gatherCoal() {
-        gatherEntity('coal_ore')
+    async function gatherCoal() {
+        await gatherEntity('coal_ore')
     }
 
     // This function will make the Bot chop + pick up a Spruce Log.
-    aysnc function gatherLog() {
-        gatherEntity('spruce_log')
+    async function gatherLog() {
+        await gatherEntity('spruce_log')
     }
 
     // This function will make the Bot chop + pick up a named entity.
