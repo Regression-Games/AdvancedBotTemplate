@@ -1,6 +1,6 @@
 /**
  * This strategy is an advanced example of how to customize movements, place blocks, and craft items with the rg-bot package.
- * The Bot will chop wood until it has 100 points-worth of items in its inventory.
+ * The Bot will collect coal until it has 100 points-worth of items in its inventory.
  * (Note: Coal_Ore and apples are each worth 1 point)
  *
  * @param {RGBot} bot
