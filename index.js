@@ -8,29 +8,39 @@
 function configureBot(bot) {
 
     bot.setDebug(true);
+    
+    // This function will make the Bot chop + pick up a Coal Ore.
+    aysnc function gatherCoal() {
+        gatherEntity('coal_ore')
+    }
 
     // This function will make the Bot chop + pick up a Spruce Log.
-    async function gatherLog() {
+    aysnc function gatherLog() {
+        gatherEntity('spruce_log')
+    }
 
-        // Track whether the Bot encountered any issues while chopping a log.
-        // There are so many trees around the spawn area that it can
+    // This function will make the Bot chop + pick up a named entity.
+    async function gatherEntity(entityName) {
+
+        // Track whether the Bot encountered any issues while chopping.
+        // There are so many things around the spawn area that it can
         // simply try to chop a different one
-        let skipCurrentLog = false;
-        const logsBefore = bot.getInventoryItemQuantity('spruce_log');
+        let skipCurrentEntity = false;
+        const countBefore = bot.getInventoryItemQuantity(entityName);
 
-        // Ensure that if the Bot fails to gather the dropped log,
-        // it will try collecting another log until its inventory reflects one has been picked up
-        while (bot.getInventoryItemQuantity('spruce_log') <= logsBefore) {
-            const foundLog = await bot.findBlock('spruce_log', {skipClosest: skipCurrentLog});
-            if (foundLog) {
-                // If the Bot located a spruce log, then go chop it
-                const success = await bot.findAndDigBlock('spruce_log', {skipClosest: skipCurrentLog});
+        // Ensure that if the Bot fails to gather the dropped item,
+        // it will try collecting another until its inventory reflects one has been picked up
+        while (bot.getInventoryItemQuantity(entityName) <= countBefore) {
+            const foundEntity = await bot.findBlock(entityName, {skipClosest: skipCurrentEntity});
+            if (foundEntity) {
+                // If the Bot located one, then go chop it
+                const success = await bot.findAndDigBlock(entityName, {skipClosest: skipCurrentEntity});
                 if (!success) {
                     // If anything prevents the Bot from breaking the block,
-                    // then find the next-closest log and try chopping that instead.
-                    skipCurrentLog = true;
+                    // then find the next-closest and try chopping that instead.
+                    skipCurrentEntity = true;
                 } else {
-                    skipCurrentLog = false;
+                    skipCurrentEntity = false;
                 }
             } else {
                 // If the Bot didn't find any logs nearby,
@@ -47,7 +57,7 @@ function configureBot(bot) {
     // The bot will announce whenever it collects a log or an apple
     bot.on('playerCollect', async (collector, collected) => {
         const itemName = bot.getEntityName(collected).toLowerCase();
-        if (collector.username === bot.mineflayer().username && (itemName.includes('log') || itemName === 'apple')) {
+        if (collector.username === bot.mineflayer().username && (itemName.includes('ore') || itemName === 'apple')) {
             bot.chat(`I collected a(n) ${itemName}`);
         }
     });
@@ -119,18 +129,18 @@ function configureBot(bot) {
     bot.on('spawn', async () => {
         bot.chat('Hello, I have arrived!');
 
-        let logsCollected = bot.getInventoryItemQuantity('spruce_log');
+        let oreCollected = bot.getInventoryItemQuantity('coal_ore');
         let applesCollected = bot.getInventoryItemQuantity('apple');
-        while (logsCollected + applesCollected < 100) {
+        while (oreCollected + applesCollected < 100) {
             if (!bot.inventoryContainsItem('_axe', {partialMatch: true})) {
                 // craft axes if inventory doesn't have any
                 await craftAxes();
             }
-            await gatherLog();
+            await gatherCoal();
         }
 
         // Once the Bot has 100 points, announce it in the chat
-        bot.chat(`I reached my goal! I have ${logsCollected} logs and ${applesCollected} apples`);
+        bot.chat(`I reached my goal! I have ${oreCollected} coal_ore and ${applesCollected} apples`);
     });
 
 }
