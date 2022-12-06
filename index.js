@@ -1,39 +1,49 @@
 /**
  * This strategy is an advanced example of how to customize movements, place blocks, and craft items with the rg-bot package.
- * The Bot will chop wood until it has 100 points-worth of items in its inventory.
- * (Note: Logs and apples are each worth 1 point)
+ * The Bot will collect coal until it has 100 points-worth of items in its inventory.
+ * (Note: Coal_Ore and apples are each worth 1 point.  Why apples you say?  Apples are a possible byproduct from collecting the logs to create new pickaxes.)
  *
  * @param {RGBot} bot
  */
 function configureBot(bot) {
 
     bot.setDebug(true);
+    
+    // This function will make the Bot chop + pick up a Coal Ore.
+    async function gatherCoal() {
+        await gatherEntity('coal_ore')
+    }
 
     // This function will make the Bot chop + pick up a Spruce Log.
     async function gatherLog() {
+        await gatherEntity('spruce_log')
+    }
 
-        // Track whether the Bot encountered any issues while chopping a log.
-        // There are so many trees around the spawn area that it can
+    // This function will make the Bot chop + pick up a named entity.
+    async function gatherEntity(entityName) {
+
+        // Track whether the Bot encountered any issues while chopping.
+        // There are so many things around the spawn area that it can
         // simply try to chop a different one
-        let skipCurrentLog = false;
-        const logsBefore = bot.getInventoryItemQuantity('spruce_log');
+        let skipCurrentEntity = false;
+        const countBefore = bot.getInventoryItemQuantity(entityName);
 
-        // Ensure that if the Bot fails to gather the dropped log,
-        // it will try collecting another log until its inventory reflects one has been picked up
-        while (bot.getInventoryItemQuantity('spruce_log') <= logsBefore) {
-            const foundLog = await bot.findBlock('spruce_log', {skipClosest: skipCurrentLog});
-            if (foundLog) {
-                // If the Bot located a spruce log, then go chop it
-                const success = await bot.findAndDigBlock('spruce_log', {skipClosest: skipCurrentLog});
+        // Ensure that if the Bot fails to gather the dropped item,
+        // it will try collecting another until its inventory reflects one has been picked up
+        while (bot.getInventoryItemQuantity(entityName) <= countBefore) {
+            const foundEntity = await bot.findBlock(entityName, {skipClosest: skipCurrentEntity});
+            if (foundEntity) {
+                // If the Bot located one, then go chop it
+                const success = await bot.findAndDigBlock(entityName, {skipClosest: skipCurrentEntity});
                 if (!success) {
                     // If anything prevents the Bot from breaking the block,
-                    // then find the next-closest log and try chopping that instead.
-                    skipCurrentLog = true;
+                    // then find the next-closest and try gathering that instead.
+                    skipCurrentEntity = true;
                 } else {
-                    skipCurrentLog = false;
+                    skipCurrentEntity = false;
                 }
             } else {
-                // If the Bot didn't find any logs nearby,
+                // If the Bot didn't find any nearby,
                 // then allow it to wander a bit and look again.
                 // This loop makes sure it completes the 'wander' movement.
                 let didWander = false;
@@ -44,10 +54,10 @@ function configureBot(bot) {
         }
     }
 
-    // The bot will announce whenever it collects a log or an apple
+    // The bot will announce whenever it collects ore or an apple
     bot.on('playerCollect', async (collector, collected) => {
         const itemName = bot.getEntityName(collected).toLowerCase();
-        if (collector.username === bot.mineflayer().username && (itemName.includes('log') || itemName === 'apple')) {
+        if (collector.username === bot.mineflayer().username && (itemName.includes('ore') || itemName === 'apple')) {
             bot.chat(`I collected a(n) ${itemName}`);
         }
     });
@@ -92,45 +102,47 @@ function configureBot(bot) {
         }
     }
 
-    // This method gathers enough wood to craft two axes
+    // This method gathers enough wood to craft two pickaxes
     // (crafting two at once is more efficient than waiting for the first to break before crafting the second)
-    async function craftAxes() {
+    async function craftPickAxes() {
 
-        // If the Bot doesn't have all the materials it needs to craft two axes, then gather them now.
+        // If the Bot doesn't have all the materials it needs to craft two pickaxes, then gather them now.
         await craftTable();
         await craftSticks();
         await craftPlanks();
 
-        // Finally, craft the axes
+        // Finally, craft the pickaxes
         // Locate a spot to place the craftingTable, place it, then stand next to it
         const ground = bot.findBlock('grass', {onlyFindTopBlocks: true, maxDistance: 20}) || bot.findBlock('dirt', { onlyFindTopBlocks: true, maxDistance: 20});
         await bot.placeBlock('crafting_table', ground);
         const placedTable = await bot.findBlock('crafting_table');
         await bot.approachBlock(placedTable);
 
-        // Craft 2 axes and equip one of them, then gather the crafting table
-        await bot.craftItem('wooden_axe', { quantity: 2, craftingTable: placedTable });
-        await bot.holdItem('wooden_axe');
+        // Craft 2 pickaxes and equip one of them, then gather the crafting table
+        await bot.craftItem('wooden_pickaxe', { quantity: 2, craftingTable: placedTable });
+        await bot.holdItem('wooden_pickaxe');
         await bot.findAndDigBlock('crafting_table');
     }
 
     // When the Bot spawns, begin the main gathering loop.
-    // Before collecting a log, have the Bot craft axes if it has none.
+    // Before collecting, have the Bot craft pickaxes if it has none.
     bot.on('spawn', async () => {
         bot.chat('Hello, I have arrived!');
 
-        let logsCollected = bot.getInventoryItemQuantity('spruce_log');
+        let oreCollected = bot.getInventoryItemQuantity('coal_ore');
         let applesCollected = bot.getInventoryItemQuantity('apple');
-        while (logsCollected + applesCollected < 100) {
-            if (!bot.inventoryContainsItem('_axe', {partialMatch: true})) {
-                // craft axes if inventory doesn't have any
-                await craftAxes();
+        
+        // NOTE: This is an example of a score check.  In a real bot you likely wouldn't do this and would keep going until the match ends.
+        while (oreCollected + applesCollected < 100) {
+            if (!bot.inventoryContainsItem('_pickaxe', {partialMatch: true})) {
+                // craft pickaxes if inventory doesn't have any
+                await craftPickAxes();
             }
-            await gatherLog();
+            await gatherCoal();
         }
 
         // Once the Bot has 100 points, announce it in the chat
-        bot.chat(`I reached my goal! I have ${logsCollected} logs and ${applesCollected} apples`);
+        bot.chat(`I reached my goal! I have ${oreCollected} coal_ore and ${applesCollected} apples`);
     });
 
 }
