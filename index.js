@@ -54,7 +54,7 @@ function configureBot(bot) {
         }
     }
 
-    // The bot will announce whenever it collects a ore or an apple
+    // The bot will announce whenever it collects ore or an apple
     bot.on('playerCollect', async (collector, collected) => {
         const itemName = bot.getEntityName(collected).toLowerCase();
         if (collector.username === bot.mineflayer().username && (itemName.includes('ore') || itemName === 'apple')) {
