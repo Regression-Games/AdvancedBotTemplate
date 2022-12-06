@@ -1,7 +1,7 @@
 /**
  * This strategy is an advanced example of how to customize movements, place blocks, and craft items with the rg-bot package.
  * The Bot will chop wood until it has 100 points-worth of items in its inventory.
- * (Note: Logs and apples are each worth 1 point)
+ * (Note: Coal_Ore and apples are each worth 1 point)
  *
  * @param {RGBot} bot
  */
@@ -43,7 +43,7 @@ function configureBot(bot) {
                     skipCurrentEntity = false;
                 }
             } else {
-                // If the Bot didn't find any logs nearby,
+                // If the Bot didn't find any nearby,
                 // then allow it to wander a bit and look again.
                 // This loop makes sure it completes the 'wander' movement.
                 let didWander = false;
@@ -54,7 +54,7 @@ function configureBot(bot) {
         }
     }
 
-    // The bot will announce whenever it collects a log or an apple
+    // The bot will announce whenever it collects a ore or an apple
     bot.on('playerCollect', async (collector, collected) => {
         const itemName = bot.getEntityName(collected).toLowerCase();
         if (collector.username === bot.mineflayer().username && (itemName.includes('ore') || itemName === 'apple')) {
@@ -125,15 +125,15 @@ function configureBot(bot) {
     }
 
     // When the Bot spawns, begin the main gathering loop.
-    // Before collecting a log, have the Bot craft axes if it has none.
+    // Before collecting, have the Bot craft axes if it has none.
     bot.on('spawn', async () => {
         bot.chat('Hello, I have arrived!');
 
         let oreCollected = bot.getInventoryItemQuantity('coal_ore');
         let applesCollected = bot.getInventoryItemQuantity('apple');
         while (oreCollected + applesCollected < 100) {
-            if (!bot.inventoryContainsItem('_axe', {partialMatch: true})) {
-                // craft axes if inventory doesn't have any
+            if (!bot.inventoryContainsItem('_pickaxe', {partialMatch: true})) {
+                // craft pickaxes if inventory doesn't have any
                 await craftAxes();
             }
             await gatherCoal();
