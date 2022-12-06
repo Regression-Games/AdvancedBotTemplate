@@ -102,25 +102,25 @@ function configureBot(bot) {
         }
     }
 
-    // This method gathers enough wood to craft two axes
+    // This method gathers enough wood to craft two pickaxes
     // (crafting two at once is more efficient than waiting for the first to break before crafting the second)
-    async function craftAxes() {
+    async function craftPickAxes() {
 
-        // If the Bot doesn't have all the materials it needs to craft two axes, then gather them now.
+        // If the Bot doesn't have all the materials it needs to craft two pickaxes, then gather them now.
         await craftTable();
         await craftSticks();
         await craftPlanks();
 
-        // Finally, craft the axes
+        // Finally, craft the pickaxes
         // Locate a spot to place the craftingTable, place it, then stand next to it
         const ground = bot.findBlock('grass', {onlyFindTopBlocks: true, maxDistance: 20}) || bot.findBlock('dirt', { onlyFindTopBlocks: true, maxDistance: 20});
         await bot.placeBlock('crafting_table', ground);
         const placedTable = await bot.findBlock('crafting_table');
         await bot.approachBlock(placedTable);
 
-        // Craft 2 axes and equip one of them, then gather the crafting table
-        await bot.craftItem('wooden_axe', { quantity: 2, craftingTable: placedTable });
-        await bot.holdItem('wooden_axe');
+        // Craft 2 pickaxes and equip one of them, then gather the crafting table
+        await bot.craftItem('wooden_pickaxe', { quantity: 2, craftingTable: placedTable });
+        await bot.holdItem('wooden_pickaxe');
         await bot.findAndDigBlock('crafting_table');
     }
 
@@ -134,7 +134,7 @@ function configureBot(bot) {
         while (oreCollected + applesCollected < 100) {
             if (!bot.inventoryContainsItem('_pickaxe', {partialMatch: true})) {
                 // craft pickaxes if inventory doesn't have any
-                await craftAxes();
+                await craftPickAxes();
             }
             await gatherCoal();
         }
