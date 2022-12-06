@@ -37,7 +37,7 @@ function configureBot(bot) {
                 const success = await bot.findAndDigBlock(entityName, {skipClosest: skipCurrentEntity});
                 if (!success) {
                     // If anything prevents the Bot from breaking the block,
-                    // then find the next-closest and try chopping that instead.
+                    // then find the next-closest and try gathering that instead.
                     skipCurrentEntity = true;
                 } else {
                     skipCurrentEntity = false;
