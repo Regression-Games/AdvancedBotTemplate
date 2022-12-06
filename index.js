@@ -1,7 +1,7 @@
 /**
  * This strategy is an advanced example of how to customize movements, place blocks, and craft items with the rg-bot package.
  * The Bot will collect coal until it has 100 points-worth of items in its inventory.
- * (Note: Coal_Ore and apples are each worth 1 point)
+ * (Note: Coal_Ore and apples are each worth 1 point.  Why apples you say?  Apples are a possible byproduct from collecting the logs to create new pickaxes.)
  *
  * @param {RGBot} bot
  */
@@ -131,6 +131,8 @@ function configureBot(bot) {
 
         let oreCollected = bot.getInventoryItemQuantity('coal_ore');
         let applesCollected = bot.getInventoryItemQuantity('apple');
+        
+        // NOTE: This is an example of a score check.  In a real bot you likely wouldn't do this and would keep going until the match ends.
         while (oreCollected + applesCollected < 100) {
             if (!bot.inventoryContainsItem('_pickaxe', {partialMatch: true})) {
                 // craft pickaxes if inventory doesn't have any
