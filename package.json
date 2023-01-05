@@ -1,5 +1,5 @@
 {
-  "name": "nodejs",
+  "name": "advanced-bot-template",
   "version": "1.0.0",
   "description": "An advanced example of how to customize movements, place blocks, and craft items with the rg-bot package.",
   "main": "index.js",
