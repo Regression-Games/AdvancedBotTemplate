@@ -13,9 +13,8 @@ const RGBot = require("rg-bot").RGBot;
 
 /**
  * @param {RGBot} bot
- * @param {EventEmitter} matchInfoEmitter
  */
-function configureBot(bot, matchInfoEmitter) {
+function configureBot(bot) {
   // Bot logic here
 }
 
@@ -29,7 +28,7 @@ Here is an example of the `configureBot` function with some basic logic that wil
 anything it sees in chat from other players.
 
 ```javascript
-function configureBot(bot, matchInfoEmitter) {
+function configureBot(bot) {
 
   // Every time a player says something in the game, 
   // do something with that player's username and their message

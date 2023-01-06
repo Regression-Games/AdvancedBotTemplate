@@ -4,9 +4,8 @@
  * (Note: Coal_Ore and apples are each worth 1 point.  Why apples you say?  Apples are a possible byproduct from collecting the logs to create new pickaxes.)
  *
  * @param {RGBot} bot
- * @param {EventEmitter} matchInfoEmitter
  */
-function configureBot(bot, matchInfoEmitter) {
+function configureBot(bot) {
 
     bot.setDebug(true);
     
