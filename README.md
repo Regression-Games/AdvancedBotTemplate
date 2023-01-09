@@ -1,16 +1,19 @@
-# AdvancedBotTemplate
-An advanced example of how to customize movements, craft items, and place blocks using the rg-bot package
-
 # Regression Games Bot Template
 
 This template demonstrates how to use advanced features of the [rg-bot package](https://www.npmjs.com/package/rg-bot) to create
-a bot for the Regression Games: Ultimate Collector challenge.
+a bot for the Regression Games: Ultimate Collector challenge.  
+_Not sure what this is? Visit https://regression.gg for some programming fun!_
 
 ## Minimum Requirements for Regression Games
 
 Every bot must have an `index.js` file with the following code:
 
 ```javascript
+const RGBot = require("rg-bot").RGBot;
+
+/**
+ * @param {RGBot} bot
+ */
 function configureBot(bot) {
   // Bot logic here
 }
@@ -35,7 +38,7 @@ function configureBot(bot) {
       // don't do anything else. This is because we don't want the bot to repeat 
       // something that it says itself, or else it will spam the chat and be 
       // kicked from the game!
-      if (username === bot.mineflayer().username) return
+      if (username === bot.username()) return
       
       // make the bot chat with the same message the other player sent
       bot.chat("This is what I heard: " + message)
@@ -45,5 +48,3 @@ function configureBot(bot) {
 
 exports.configureBot = configureBot
 ```
-
-_Not sure what this is? Visit https://regression.gg for some programming fun!_
