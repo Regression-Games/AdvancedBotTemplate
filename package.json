@@ -1,8 +1,8 @@
 {
-  "name": "advanced-bot-template",
+  "name": "rg-js-template",
   "version": "1.0.0",
-  "description": "An advanced example of how to customize movements, place blocks, and craft items with the rg-bot package.",
-  "main": "index.js",
+  "description": "A simple example for getting started with the rg-bot package with JavaScript.",
+  "main": "index.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,16 +10,18 @@
   "author": "Regression Games, Inc",
   "license": "ISC",
   "dependencies": {
-    "@types/node": "^18.0.6",
-    "minecraft-data": "^3.17.0",
-    "mineflayer": "^4.5.1",
-    "mineflayer-pathfinder": "^2.4.0",
-    "node-fetch": "^3.2.6",
-    "prismarine-entity": "^2.1.1",
-    "prismarine-item": "^1.11.5",
-    "prismarine-viewer": "^1.23.0",
-    "rg-bot": "^1.3.0",
-    "rg-match-info": "^1.0.0",
-    "vec3": "^0.1.7"
+    "@types/node": "18.0.6",
+    "minecraft-data": "3.17.0",
+    "mineflayer": "4.5.1",
+    "mineflayer-armor-manager": "1.4.2",
+    "mineflayer-pathfinder": "2.4.0",
+    "node-fetch": "3.2.6",
+    "prismarine-entity": "2.1.1",
+    "prismarine-item": "1.11.5",
+    "prismarine-viewer": "1.23.0",
+    "rg-bot": "1.10.0",
+    "rg-ctf-utils": "1.0.5",
+    "rg-match-info": "1.1.0",
+    "vec3": "0.1.7"
   }
 }
