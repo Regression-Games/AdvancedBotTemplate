@@ -2,7 +2,7 @@
   "name": "rg-js-template",
   "version": "1.0.0",
   "description": "A simple example for getting started with the rg-bot package with JavaScript.",
-  "main": "index.ts",
+  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,7 +15,7 @@
     "mineflayer": "4.5.1",
     "mineflayer-armor-manager": "1.4.2",
     "mineflayer-pathfinder": "2.4.0",
-    "node-fetch": "3.2.6",
+    "node-fetch": "3.3.0",
     "prismarine-entity": "2.1.1",
     "prismarine-item": "1.11.5",
     "prismarine-viewer": "1.23.0",
