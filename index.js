@@ -1,5 +1,5 @@
 const { RGBot } = require('rg-bot');
-const RGCTFUtils = require('rg-ctf-utils');
+const { RGCTFUtils } = require('rg-ctf-utils');
 const {
   handleAttackFlagCarrier,
   handleAttackNearbyOpponent,
