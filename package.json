@@ -18,6 +18,7 @@
     "node-fetch": "3.3.0",
     "prismarine-entity": "2.1.1",
     "prismarine-item": "1.11.5",
+    "prismarine-block": "1.16.3",
     "prismarine-viewer": "1.23.0",
     "rg-bot": "1.10.0",
     "rg-ctf-utils": "1.0.5",

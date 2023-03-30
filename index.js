@@ -1,5 +1,6 @@
 const { RGBot } = require('rg-bot');
-const { RGCTFUtils } = require('rg-ctf-utils');
+const { RGMatchInfo } = require('rg-match-info');
+const { RGCTFUtils, CTFEvent } = require('rg-ctf-utils');
 const {
   handleAttackFlagCarrier,
   handleAttackNearbyOpponent,
@@ -44,10 +45,45 @@ export function configureBot(bot) {
   // Load the armor-manager plugin (https://github.com/PrismarineJS/MineflayerArmorManager)
   bot.mineflayer().loadPlugin(armorManager)
 
-  // Information about the unbreakable block types
+  /**
+   * Information about the unbreakable block types
+   * @type {number[]}
+   */
   unbreakable = getUnbreakableBlockIds(bot)
   console.log(`Unbreakable blocks: ${JSON.stringify(unbreakable)}`)
 
+
+  /**
+   * Listeners for key events.  This bot uses these for logging information for debugging.
+   * You may use these for actions, but this main loop bot does not
+   */
+  bot.on('match_ended', async (matchInfo) => {
+
+    /** @type {number | undefined} */
+    const points = matchInfo?.players.find(player => player.username === bot.username())?.metadata?.score
+    /** @type {number | undefined} */
+    const captures = matchInfo?.players.find(player => player.username === bot.username())?.metadata?.flagCaptures
+    console.log(`The match has ended - I had ${captures} captures and scored ${points} points`)
+  })
+
+  bot.on('match_started', async (matchInfo) => {
+    console.log(`The match has started`)
+  })
+
+  bot.on(CTFEvent.FLAG_OBTAINED, async (collector) => {
+    console.log(`Flag picked up by ${collector}`)
+    if (collector === bot.username()) {
+      console.log('I have the flag... yippee !!!')
+    }
+  })
+
+  bot.on(CTFEvent.FLAG_SCORED, async (teamName) => {
+    console.log(`Flag scored by ${teamName} team`)
+  })
+
+  bot.on(CTFEvent.FLAG_AVAILABLE, async (position) => {
+    console.log('Flag is available')
+  })
 }
 
 /**
@@ -56,18 +92,31 @@ export function configureBot(bot) {
 export async function runTurn(bot) {
 
   try {
-
-    // find out which team I'm on
+    /**
+     * find out which team I'm on
+     * @type {string}
+     */
     const myTeamName = bot.getMyTeam()
-    const otherTeamName = bot.matchInfo().teams.find(t => t.name !== myTeamName)?.name
 
-    // get my current position and log information about my state
+    /**
+     * find my current position
+     * @type {Vec3}
+     */
     const myPosition = bot.position()
+
+    // then log information about my state
     console.log(`My team: ${myTeamName}, my position: ${bot.vecToString(myPosition)}, my inventory: ${JSON.stringify(bot.getAllInventoryItems().map((item) => nameForItem(item)))}`)
 
-    // find any opponents in range
+    /**
+     * find any teammates in range
+     * @type {Entity[]}
+     */
+    const teamMates = nearestTeammates(bot, 33, true)
 
+    // find any opponents within range
+    /** @type {string[]} */
     const opponentNames = bot.getOpponentUsernames()
+    /** @type {Entity[]} */
     const opponents = bot.findEntities({
       // opNames can be empty in practice mode where there is no other team
       // if we don't pass some array to match, then this will return all entities instead
@@ -84,9 +133,6 @@ export async function runTurn(bot) {
         return distance
       }
     }).map(fr => fr.result)
-
-    // find any teammates in range
-    const teamMates = nearestTeammates(bot, 33, true)
 
     // equip my best armor
     bot.mineflayer().armorManager.equipAll()
